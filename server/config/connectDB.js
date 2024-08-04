@@ -6,7 +6,7 @@ async function conntectDB() {
     const connection = mongoose.connection;
 
     connection.on("connected", () => {
-      console.log("Connnected to DB succesfull");
+      console.log("Connnecttion to DB succesfull");
     });
 
     connection.on("error", (err) => {
