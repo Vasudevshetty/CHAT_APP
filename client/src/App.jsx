@@ -1,5 +1,11 @@
+import { Outlet } from "react-router-dom";
+
 function App() {
-  return <div className="font-extrabold m-4">hello world</div>;
+  return (
+    <main>
+      <Outlet />
+    </main>
+  );
 }
 
 export default App;
