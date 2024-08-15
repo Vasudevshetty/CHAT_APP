@@ -3,7 +3,6 @@ const bcryptjs = require("bcryptjs");
 
 async function regiseterUser(req, res) {
   try {
-    console.log(req.body);
     const { name, email, password, profile_pic } = req.body;
 
     const checkEmail = User.findOne({ email });
