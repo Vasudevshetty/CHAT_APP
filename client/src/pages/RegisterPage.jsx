@@ -1,6 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { IoClose } from "react-icons/io5";
+import uploadFile from "../helpers/uploadFile";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 function RegisterPage() {
   const [data, setData] = useState({
@@ -10,15 +13,25 @@ function RegisterPage() {
     profile_pic: "",
   });
   const [uploadPhoto, setUploadPhoto] = useState("");
+  const navigate = useNavigate();
 
   const handleClearUploadPhoto = (e) => {
     e.preventDefault();
     setUploadPhoto(null);
-    e.stopPropogation();
+    setData((data) => {
+      return { ...data, profile_pic: "" };
+    });
   };
 
-  const handleUploadPhoto = (e) => {
+  const handleUploadPhoto = async (e) => {
     const file = e.target.files[0];
+
+    const uploadedPhoto = await uploadFile(file);
+    console.log(uploadedPhoto);
+    setData((data) => {
+      return { ...data, profile_pic: uploadedPhoto?.url };
+    });
+
     setUploadPhoto(file);
   };
 
@@ -29,14 +42,27 @@ function RegisterPage() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    e.stopPropogation();
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_APP_BACKEND_URL_DEV}/register`,
+        data
+      );
+      toast.success(response.data.message);
+
+      if (response.data.success) {
+        setData({ name: "", email: "", password: "", profile_pic: "" });
+        navigate("/email");
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
   };
 
   return (
-    <div className="mt-5">
-      <div className="bg-white w-full max-w-sm rounded overflow-hidden p-4 mx-auto">
+    <div className="mt-8">
+      <div className="bg-white w-full max-w-md rounded overflow-hidden p-4 mx-auto">
         <h3>Welcome to chat app!</h3>
 
         <form className="grid gap-4 mt-5" onSubmit={handleSubmit}>
@@ -102,7 +128,6 @@ function RegisterPage() {
               name="profile_pic"
               placeholder="Enter your profile_pic"
               className="bg-slate-100 px-2 py-1 focus:outline-primary hidden"
-              value={data.profile_pic}
               onChange={handleUploadPhoto}
             />
           </div>
