@@ -48,7 +48,7 @@ function Avatar({ name, imageUrl, width, height }) {
           {avatarName}
         </div>
       ) : (
-        <PiUserCircle size={70} />
+        <PiUserCircle size={width} />
       )}
     </div>
   );
