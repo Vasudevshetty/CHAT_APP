@@ -1,18 +1,22 @@
+import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useState } from "react";
 import { IoChatbubbleEllipses } from "react-icons/io5";
 import { FaUserPlus } from "react-icons/fa";
 import { BiLogOut } from "react-icons/bi";
-import { NavLink } from "react-router-dom";
-import Avatar from "./Avatar";
-import { useSelector } from "react-redux";
-import { useState } from "react";
+import { FiArrowUpLeft } from "react-icons/fi";
 import EditUserDetails from "./EditUserDetails";
+import Avatar from "./Avatar";
+import SearchUser from "./SearchUser";
 
 function Sidebar() {
   const [userEditOpen, setUserEditOpen] = useState(false);
+  const [searchUserOpen, setSearchUserOpen] = useState(false);
   const user = useSelector((state) => state?.user);
+  const [friends, setFriends] = useState([]);
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full grid grid-cols-[48px,1fr]">
       <div className="h-full bg-slate-100 w-12 rounded-tr-md rounded-br-md py-5 text-slate-600 flex flex-col justify-between">
         <div>
           <NavLink
@@ -28,6 +32,7 @@ function Sidebar() {
           <div
             className="w-12 h-12 flex items-center justify-center cursor-pointer hover:bg-slate-200 rounded"
             title="add friend"
+            onClick={() => setSearchUserOpen(true)}
           >
             <FaUserPlus size={20} />
           </div>
@@ -57,8 +62,32 @@ function Sidebar() {
         </div>
       </div>
 
+      <div className="w-full">
+        <div className="h-16 flex  items-center">
+          <h2 className="font-bold text-xl p-4 text-slate-800">Message</h2>
+        </div>
+        <div className="py-[0.5px] bg-slate-200"></div>
+
+        <div className="h-[calc(100vh-65px)] overflow-x-hidden overflow-y-auto scrollbar">
+          {friends.length == 0 && (
+            <div className="mt-12">
+              <div className="flex justify-center text-slate-500 my-4">
+                <FiArrowUpLeft size={50} />
+              </div>
+              <p className="text-lg text-center text-slate-400">
+                Create a new friend to chat with !
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+
       {userEditOpen && (
         <EditUserDetails onClose={() => setUserEditOpen(false)} user={user} />
+      )}
+
+      {searchUserOpen && (
+        <SearchUser onClose={() => setSearchUserOpen(false)} />
       )}
     </div>
   );
