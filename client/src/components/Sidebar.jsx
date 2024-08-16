@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoChatbubbleEllipses } from "react-icons/io5";
 import { FaUserPlus } from "react-icons/fa";
 import { BiLogOut } from "react-icons/bi";
@@ -13,7 +13,17 @@ function Sidebar() {
   const [userEditOpen, setUserEditOpen] = useState(false);
   const [searchUserOpen, setSearchUserOpen] = useState(false);
   const user = useSelector((state) => state?.user);
-  const [friends, setFriends] = useState([]);
+  const socketConnection = useSelector((state) => state.user.socketConnection);
+  const [allUser, setAllUser] = useState([]);
+
+  useEffect(() => {
+    if (socketConnection) {
+      socketConnection.emit("sidebar", user._id);
+
+      socketConnection.on("conversations", (data) => {
+      });
+    }
+  }, [socketConnection, user._id]);
 
   return (
     <div className="w-full h-full grid grid-cols-[48px,1fr]">
@@ -70,7 +80,7 @@ function Sidebar() {
         <div className="py-[0.5px] bg-slate-200"></div>
 
         <div className="h-[calc(100vh-65px)] overflow-x-hidden overflow-y-auto scrollbar">
-          {friends.length == 0 && (
+          {allUser.length == 0 && (
             <div className="mt-12">
               <div className="flex justify-center text-slate-500 my-4">
                 <FiArrowUpLeft size={50} />
