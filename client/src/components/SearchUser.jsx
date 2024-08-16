@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { IoSearchOutline } from "react-icons/io5";
+import { IoClose, IoSearchOutline } from "react-icons/io5";
 import toast from "react-hot-toast";
 import axios from "axios";
 import Loader from "./Loader";
@@ -55,9 +55,16 @@ function SearchUser({ onClose }) {
           {searchUser.length > 0 &&
             !isLoading &&
             searchUser.map((user) => (
-              <UserSearchCard key={user._id} user={user} />
+              <UserSearchCard key={user._id} user={user} onClose={onClose} />
             ))}
         </div>
+      </div>
+
+      <div
+        className="absolute top-0 right-0 text-2xl p-2 lg:text-4xl hover:text-primary cursor-pointer bg-white border rounded-full m-2"
+        onClick={onClose}
+      >
+        <IoClose size={25} />
       </div>
     </div>
   );
