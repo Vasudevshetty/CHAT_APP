@@ -1,6 +1,10 @@
 import { PiUserCircle } from "react-icons/pi";
+import { useSelector } from "react-redux";
 
-function Avatar({ name, imageUrl, width, height }) {
+function Avatar({ userId, name, imageUrl, width, height }) {
+  const onlineUser = useSelector((state) => state.user?.onlineUser);
+  const isOnline = onlineUser.includes(userId);
+
   let avatarName = "";
   if (name) {
     const splitName = name?.split(" ");
@@ -21,7 +25,7 @@ function Avatar({ name, imageUrl, width, height }) {
 
   return (
     <div
-      className={`overflow-hidden text-slate-800 font-bold rounded-full `}
+      className={`text-slate-800 font-bold rounded-full relative`}
       style={{
         width: width + "px",
         height: height + "px",
@@ -49,6 +53,10 @@ function Avatar({ name, imageUrl, width, height }) {
         </div>
       ) : (
         <PiUserCircle size={width} />
+      )}
+
+      {isOnline && (
+        <div className="bg-green-600 p-1 rounded-full absolute bottom-2 right-0 z-10"></div>
       )}
     </div>
   );

@@ -3,7 +3,12 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { logout, setUser } from "../redux/userSlice";
+import {
+  logout,
+  setOnlineUser,
+  setSocketConnection,
+  setUser,
+} from "../redux/userSlice";
 import io from "socket.io-client";
 import Sidebar from "../components/Sidebar";
 
@@ -45,6 +50,12 @@ function Home() {
       transports: ["websocket", "polling"],
     });
 
+    dispatch(setSocketConnection(socketConnection));
+
+    socketConnection.on("onlineUser", (data) => {
+      dispatch(setOnlineUser(data));
+    });
+
     socketConnection.on("connect_error", (err) => {
       console.error("Connection error:", err.message);
     });
@@ -52,7 +63,7 @@ function Home() {
     return () => {
       socketConnection.disconnect();
     };
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="grid lg:grid-cols-[300px,1fr] h-screen max-h-screen">
