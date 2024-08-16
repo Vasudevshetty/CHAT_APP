@@ -1,11 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
+import toast from "react-hot-toast";
+import axios from "axios";
 import Loader from "./Loader";
 import UserSearchCard from "./UserSearchCard";
 
 function SearchUser({ onClose }) {
   const [searchUser, setSearchUser] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    const handleSearch = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axios({
+          method: "POST",
+          url: `${import.meta.env.VITE_APP_BACKEND_URL_DEV}/search-users`,
+          data: {
+            search: query,
+          },
+        });
+        setSearchUser(response.data.data);
+        setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+        toast.error(error.message);
+      }
+    };
+    handleSearch();
+  }, [query]);
 
   return (
     <div className="fixed top-0 bottom-0 right-0 left-0 bg-slate-700 bg-opacity-40 p-2">
@@ -15,6 +39,8 @@ function SearchUser({ onClose }) {
             type="text"
             placeholder="Search User by name, email...."
             className="w-full outline-none py-1 h-full px-4"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
           />
           <div className="h-14 w-14 flex justify-center items-center">
             <IoSearchOutline size={25} />
