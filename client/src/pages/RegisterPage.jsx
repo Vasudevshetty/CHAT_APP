@@ -46,7 +46,7 @@ function RegisterPage() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_APP_BACKEND_URL_DEV}/register`,
+        `${import.meta.env.VITE_APP_BACKEND_URL_DEV}/api/register`,
         data
       );
       toast.success(response.data.message);

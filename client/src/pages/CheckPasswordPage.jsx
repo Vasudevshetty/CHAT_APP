@@ -31,7 +31,7 @@ function CheckPasswordPage() {
     try {
       const response = await axios({
         method: "POST",
-        url: `${import.meta.env.VITE_APP_BACKEND_URL_DEV}/password`,
+        url: `${import.meta.env.VITE_APP_BACKEND_URL_DEV}/api/password`,
         data: {
           userId: location.state?._id,
           password: data.password,

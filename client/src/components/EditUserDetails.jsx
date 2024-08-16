@@ -43,7 +43,7 @@ function EditUserDetails({ onClose, user }) {
     try {
       const response = await axios({
         method: "POST",
-        url: `${import.meta.env.VITE_APP_BACKEND_URL_DEV}/update`,
+        url: `${import.meta.env.VITE_APP_BACKEND_URL_DEV}/api/update`,
         data,
         withCredentials: true,
       });

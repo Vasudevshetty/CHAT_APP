@@ -16,7 +16,7 @@ function SearchUser({ onClose }) {
         setIsLoading(true);
         const response = await axios({
           method: "POST",
-          url: `${import.meta.env.VITE_APP_BACKEND_URL_DEV}/search-users`,
+          url: `${import.meta.env.VITE_APP_BACKEND_URL_DEV}/api/search-users`,
           data: {
             search: query,
           },

@@ -21,7 +21,7 @@ function CheckEmailPage() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_APP_BACKEND_URL_DEV}/email`,
+        `${import.meta.env.VITE_APP_BACKEND_URL_DEV}/api/email`,
         data
       );
       toast.success(response.data.message);

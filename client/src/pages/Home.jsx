@@ -2,8 +2,9 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { logout, setUser } from "../redux/userSlice";
+import io from "socket.io-client";
 import Sidebar from "../components/Sidebar";
 
 function Home() {
@@ -17,7 +18,7 @@ function Home() {
     async function fetchUser() {
       try {
         const response = await axios({
-          url: `${import.meta.env.VITE_APP_BACKEND_URL_DEV}/user-details`,
+          url: `${import.meta.env.VITE_APP_BACKEND_URL_DEV}/api/user-details`,
           withCredentials: true,
         });
 
@@ -34,6 +35,24 @@ function Home() {
 
     fetchUser();
   }, [dispatch, navigate]);
+
+  useEffect(() => {
+    const socketConnection = io(import.meta.env.VITE_APP_BACKEND_URL_DEV, {
+      withCredentials: true,
+      auth: {
+        token: localStorage.getItem("token"),
+      },
+      transports: ["websocket", "polling"],
+    });
+
+    socketConnection.on("connect_error", (err) => {
+      console.error("Connection error:", err.message);
+    });
+
+    return () => {
+      socketConnection.disconnect();
+    };
+  }, []);
 
   return (
     <div className="grid lg:grid-cols-[300px,1fr] h-screen max-h-screen">
