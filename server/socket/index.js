@@ -3,7 +3,7 @@ const { Server } = require("socket.io");
 const http = require("http");
 const getDataFromToken = require("../helpers/getDataFromToken");
 const User = require("../models/userModel");
-const Conversation = require("../models/conversationModel");
+const Conversation = require("../models/ConversationModel");
 const Message = require("../models/MessageModel");
 const getConversation = require("../helpers/getConversation");
 
