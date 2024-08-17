@@ -5,6 +5,7 @@ const getDataFromToken = require("../helpers/getDataFromToken");
 const User = require("../models/userModel");
 const Conversation = require("../models/conversationModel");
 const Message = require("../models/MessageModel");
+const getConversation = require("../helpers/getConversation");
 
 const app = express();
 const server = http.createServer(app);
@@ -98,20 +99,43 @@ io.on("connection", async (socket) => {
 
     io.to(data?.sender).emit("message", getConversationMessage);
     io.to(data?.receiver).emit("message", getConversationMessage);
+
+    const conversationSender = await getConversation(data?.sender);
+    const conversationReciever = await getConversation(data?.receiver);
+
+    io.to(data?.sender).emit("conversations", conversationSender);
+    io.to(data?.receiver).emit("conversations", conversationReciever);
   });
 
   socket.on("sidebar", async (currentUserId) => {
-    const userConversation = await Conversation.find({
-      $or: [{ sender: currentUserId }, { receiver: currentUserId }],
-    }).sort({ updatedAt: -1 });
+    const conversation = await getConversation(currentUserId);
+    socket.emit("conversations", conversation);
+  });
 
-    const conversation = userConversation.map((message) => {
-      return {
-        ...m
-      }
-    })
+  socket.on("seen", async (receiverId) => {
+    const conversation = await Conversation.findOne({
+      $or: [
+        { sender: user._id, receiver: receiverId },
+        { sender: receiverId, receiver: user._id },
+      ],
+    });
 
-    socket.emit("conversations", userConversation);
+    if (conversation) {
+      const updateMessages = await Message.updateMany(
+        { _id: { $in: conversation.messages }, msgByUserId: receiverId },
+        { $set: { seen: true } }
+      );
+
+      const updatedMessages = await Conversation.findOne({
+        $or: [
+          { sender: user._id, receiver: receiverId },
+          { sender: receiverId, receiver: user._id },
+        ],
+      }).populate("messages");
+
+      io.to(user._id.toString()).emit("message", updatedMessages); // Update messages for the current user
+      io.to(receiverId.toString()).emit("message", updatedMessages); // Notify the other user
+    }
   });
 
   socket.on("disconnect", () => {

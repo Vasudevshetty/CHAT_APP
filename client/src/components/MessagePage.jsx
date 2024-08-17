@@ -50,6 +50,8 @@ function MessagePage() {
       socketConnection.on("message", (data) => {
         setAllMessages(data.messages);
       });
+
+      socketConnection.emit("seen", userId);
     }
   }, [socketConnection, userId, user]);
 
@@ -164,8 +166,10 @@ function MessagePage() {
           {allMessages.map((message) => (
             <div
               key={message._id}
-              className={`bg-white p-1 rounded w-fit ${
-                user._id === message.msgByUserId ? "ml-auto bg-teal-400" : ""
+              className={` p-1 rounded w-fit ${
+                user._id === message.msgByUserId
+                  ? "ml-auto bg-teal-500"
+                  : "bg-white"
               } max-[280px] md:max-w-sm lg:max-w-md`}
             >
               <div className="w-full">

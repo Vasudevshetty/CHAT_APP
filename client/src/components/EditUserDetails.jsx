@@ -16,8 +16,8 @@ function EditUserDetails({ onClose, user }) {
   });
 
   useEffect(() => {
-    setData((data) => {
-      return { ...data, ...user };
+    setData(() => {
+      return { name: user?.name, profile_pic: user?.profile_pic };
     });
   }, [user]);
 
