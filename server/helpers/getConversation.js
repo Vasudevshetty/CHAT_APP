@@ -1,4 +1,4 @@
-const Conversation = require("../models/conversationModel");
+const Conversation = require("../models/ConversationModel");
 
 const getConversation = async (currentUserId) => {
   const userConversation = await Conversation.find({
