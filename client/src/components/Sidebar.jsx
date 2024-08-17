@@ -89,6 +89,7 @@ function Sidebar() {
             onClick={() => {
               dispatch(logout());
               navigate("/email");
+              localStorage.clear();
             }}
           >
             <span className="-ml-1">
