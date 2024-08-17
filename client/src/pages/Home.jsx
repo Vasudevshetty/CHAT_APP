@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import {
+  logout,
   setOnlineUser,
   setSocketConnection,
   setUser,
@@ -27,6 +28,11 @@ function Home() {
         });
 
         dispatch(setUser(response.data.data));
+
+        if (response.data.data.logout) {
+          dispatch(logout());
+          navigate("/email");
+        }
       } catch (error) {
         toast(error.message);
       }
